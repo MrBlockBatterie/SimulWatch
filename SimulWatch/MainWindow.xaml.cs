@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows;
@@ -7,6 +8,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using SimulWatch.Net;
+using SimulWatch.Utility;
 using Vlc.DotNet.Core;
 
 namespace SimulWatch
@@ -36,8 +38,9 @@ namespace SimulWatch
         {
             InitializeComponent();
             InitMediaPlayer();
-            MediaPlayer.MediaChanged += delegate(object sender, VlcMediaPlayerMediaChangedEventArgs args) { MediaPlayer.Pause(); };
+            MediaPlayer.MediaChanged += delegate(object sender, VlcMediaPlayerMediaChangedEventArgs args) { MediaPlayer.SetPause(true); };
             Volume.Value = MediaPlayer.Audio.Volume;
+            var discord = new Discord();
 
             //mediaPlayer.Play("https://s27.stream.proxer.me/files/2/ehv0g7davh9vxa/video.mp4");
 
@@ -72,6 +75,14 @@ namespace SimulWatch
                 {
                     Host.SendPackage(SyncAction.Play);
                 }
+            }
+
+            if (Slider.Maximum != MediaPlayer.GetMedia().Duration.TotalMilliseconds)
+            {
+                Debug.WriteLine(MediaPlayer.GetMedia().Duration.TotalMilliseconds);
+                Slider.Maximum = MediaPlayer.GetMedia().Duration.TotalMilliseconds;
+                Debug.WriteLine(Slider.Maximum);
+                Slider.TickFrequency = 500;
             }
             
         }
@@ -149,6 +160,7 @@ namespace SimulWatch
         private void OpenStream(object sender, RoutedEventArgs e)
         {
             MediaPlayer.Play(StreamURL.Text);
+            
             if (IsHost)
             {
                 Host.SendPackage(StreamURL.Text);
@@ -168,6 +180,7 @@ namespace SimulWatch
             {
                 Host.SendPackage(SyncAction.GoToStart);
             }
+            
         }
 
         private void StackPanel_OnMouseEnter(object sender, MouseEventArgs e)

@@ -20,7 +20,6 @@ namespace SimulWatch
                     client = new Client(TextBox.Text);
                 }));
             clientThread.Start();
-            this.Close();
         }
     }
 }

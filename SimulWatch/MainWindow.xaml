@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SimulWatch"
         xmlns:eo="http://schemas.essentialobjects.com/wpf/"
-        xmlns:wpf="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:wpf1="clr-namespace:Vlc.DotNet.Wpf;assembly=Vlc.DotNet.Wpf"
 
         mc:Ignorable="d"
@@ -48,14 +47,24 @@
             </wpf1:VlcControl>
             
         </DockPanel>
-        <StackPanel Orientation="Horizontal"
-                    Height="40"
-                    VerticalAlignment="Bottom"
-                    Background="Black"
-                    Opacity="0"
-                    Name="StackPanel"
-                    MouseEnter="StackPanel_OnMouseEnter"
-                    MouseLeave="StackPanel_OnMouseLeave">
+        <DockPanel 
+            Height="60"
+            VerticalAlignment="Bottom"
+            Background="Black"
+            Opacity="1"
+            Name="StackPanel"
+            MouseEnter="StackPanel_OnMouseEnter"
+            MouseLeave="StackPanel_OnMouseLeave">
+            <Slider DockPanel.Dock="Top"
+                     Height="15"
+                     Margin="0,0,0,5"
+                     Name="Slider"
+                     Maximum="1421034"
+                     TickFrequency="500"
+                     TickPlacement="TopLeft">
+                
+            </Slider>
+            <StackPanel Orientation="Horizontal">
                 <Image Style="{StaticResource ControlButton}" MouseDown="PlayPauseButton" Source="Assets/pause-play-button.png"/>
                 <Image Style="{StaticResource ControlButton}" MouseDown="VolumeLower" Source="Assets/volume-off.png"/>
                 <ProgressBar Margin="10"
@@ -66,7 +75,10 @@
                 <Image Style="{StaticResource ControlButton}" MouseDown="ToStart" Source="Assets/return.png"/>
                 <Image Style="{StaticResource ControlButton}" MouseDown="FullScreenMode" Source="Assets/fullscreen.png"/>
                 
-        </StackPanel>
+            </StackPanel>
+            
+        </DockPanel>
+        
         
     </Grid>
 </Window>

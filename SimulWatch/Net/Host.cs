@@ -14,15 +14,16 @@ namespace SimulWatch.Net
     public class Host
     {
 
-        private TcpClient client;
+        private TcpClient client = default(TcpClient);
         private NetworkStream stream;
         public Host()
         {
+            IPAddress ipAddress = Dns.Resolve("93.215.210.210").AddressList[0];
             IPAddress localip = GetLocalIPAddress();
             TcpListener server = new TcpListener(localip, 7979);
 
             server.Start();
-            Debug.WriteLine($"Server has started on {localip}.Waiting for a connection...", Environment.NewLine);
+            Debug.WriteLine($"Server has started on {localip} Waiting for a connection...", Environment.NewLine);
             
             App.Current.Dispatcher.Invoke(() =>
             {
@@ -80,29 +81,31 @@ namespace SimulWatch.Net
             if (action == SyncAction.LoadSource)
             {
                 Debug.WriteLine($"Message is {source.Length} bytes long");
+                int stringLength = source.Length;
                 byte[] length = new Byte[]{0,0,0,0,0};
-                if (source.Length > 255)
+                if (stringLength > 255)
                 {
                     length[0] = 255;
                     int index = 1;
                     
-                    if (source.Length % 255 <= 255)
+                    if (stringLength - 255 <= 255)
                     {
-                        length[1] = (byte)(source.Length % 255);
+                        length[1] = (byte)(stringLength % 255);
                     }
-                    while (source.Length % 255 >= 255)
+                    while (stringLength - 255 >= 255)
                     {
                         length[index] = 255;
+                        stringLength -= 255;
                         index++;
-                        if (source.Length % 255 <= 255)
+                        if (stringLength - 255 <= 255)
                         {
-                            length[index] = (byte)(source.Length % 255);
+                            length[index] = (byte)(stringLength - 255);
                         }
                     }
                 }
                 else
                 {
-                    length[0] = (byte)source.Length;
+                    length[0] = (byte)stringLength;
                 }
                 byte[] lengthBytes = new byte[]
                 {

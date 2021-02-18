@@ -30,16 +30,17 @@ namespace SimulWatch
                 OpenStreamItem.IsEnabled = true;
             }
         }
-        public VlcMediaPlayer mediaPlayer;
-        public Host host;
+        public VlcMediaPlayer MediaPlayer;
+        public Host Host;
         public MainWindow()
         {
             InitializeComponent();
             InitMediaPlayer();
-            mediaPlayer.MediaChanged += delegate(object sender, VlcMediaPlayerMediaChangedEventArgs args) { mediaPlayer.Pause(); };
-            
+            MediaPlayer.MediaChanged += delegate(object sender, VlcMediaPlayerMediaChangedEventArgs args) { MediaPlayer.Pause(); };
+            Volume.Value = MediaPlayer.Audio.Volume;
+
             //mediaPlayer.Play("https://s27.stream.proxer.me/files/2/ehv0g7davh9vxa/video.mp4");
-            
+
         }
 
         private void InitMediaPlayer()
@@ -49,28 +50,27 @@ namespace SimulWatch
             var options = new string[]
             {
                 // VLC options can be given here. Please refer to the VLC command line documentation.
-                "--fullscreen"
             };
             VlcControl.SourceProvider.CreatePlayer(vlcLibDirectory, options);
-            mediaPlayer = VlcControl.SourceProvider.MediaPlayer;
+            MediaPlayer = VlcControl.SourceProvider.MediaPlayer;
         }
 
         private void PlayPauseButton(object sender, RoutedEventArgs e)
         {
-            if (mediaPlayer.IsPlaying())
+            if (MediaPlayer.IsPlaying())
             {
-                mediaPlayer.Pause();
+                MediaPlayer.Pause();
                 if (IsHost)
                 {
-                    host.SendPackage(SyncAction.Pause);
+                    Host.SendPackage(SyncAction.Pause);
                 }
             }
             else
             {
-                mediaPlayer.Play();
+                MediaPlayer.Play();
                 if (IsHost)
                 {
-                    host.SendPackage(SyncAction.Play);
+                    Host.SendPackage(SyncAction.Play);
                 }
             }
             
@@ -80,42 +80,42 @@ namespace SimulWatch
 
         private void VolumeLower(object sender, RoutedEventArgs e)
         {
-            if (mediaPlayer.Audio.Volume > 10)
+            if (MediaPlayer.Audio.Volume > 10)
             {
-                mediaPlayer.Audio.Volume -= 10;
+                MediaPlayer.Audio.Volume -= 10;
             }
             else
             {
-                mediaPlayer.Audio.Volume = 0;
+                MediaPlayer.Audio.Volume = 0;
             }
             VolumeUpdate();
         }
 
         private void VolumeUpdate()
         {
-            Volume.Value = mediaPlayer.Audio.Volume;
+            Volume.Value = MediaPlayer.Audio.Volume;
         }
 
         private void VolumeRaise(object sender, RoutedEventArgs e)
         {
-            if (mediaPlayer.Audio.Volume < 90)
+            if (MediaPlayer.Audio.Volume < 90)
             {
-                mediaPlayer.Audio.Volume += 10;
+                MediaPlayer.Audio.Volume += 10;
             }
             else
             {
-                mediaPlayer.Audio.Volume = 100;
+                MediaPlayer.Audio.Volume = 100;
             }
             VolumeUpdate();
         }
 
         public void SkipIntro(object sender, RoutedEventArgs e)
         {
-            mediaPlayer.Time += 90000;
-            mediaPlayer.Pause();
+            MediaPlayer.Time += 90000;
+            MediaPlayer.Pause();
             if (IsHost)
             {
-                host.SendPackage(SyncAction.SkipIntro);
+                Host.SendPackage(SyncAction.SkipIntro);
             }
         }
 
@@ -127,7 +127,7 @@ namespace SimulWatch
 
         private void HostSession(object sender, RoutedEventArgs e)
         {
-            Thread hostThread = new Thread(() => host = new Host());
+            Thread hostThread = new Thread(() => Host = new Host());
             hostThread.Start();
             IsHost = true;
             Title += " {Hosting}";
@@ -148,10 +148,10 @@ namespace SimulWatch
 
         private void OpenStream(object sender, RoutedEventArgs e)
         {
-            mediaPlayer.Play(StreamURL.Text);
+            MediaPlayer.Play(StreamURL.Text);
             if (IsHost)
             {
-                host.SendPackage(StreamURL.Text);
+                Host.SendPackage(StreamURL.Text);
             }
 
             
@@ -159,11 +159,14 @@ namespace SimulWatch
 
         public void ToStart(object sender, RoutedEventArgs e)
         {
-            mediaPlayer.Position = 0;
-            mediaPlayer.Pause();
+            MediaPlayer.Position = 0;
+            if (MediaPlayer.IsPlaying())
+            {
+                MediaPlayer.Pause();
+            }
             if (IsHost)
             {
-                host.SendPackage(SyncAction.GoToStart);
+                Host.SendPackage(SyncAction.GoToStart);
             }
         }
 
@@ -179,10 +182,10 @@ namespace SimulWatch
 
         private void FullScreenMode(object sender, MouseButtonEventArgs e)
         {
-            FullscreenWindow fSreenWindow = new FullscreenWindow();
+            var fScreenWindow = new FullscreenWindow();
             Dock.Children.Remove(VlcControl);
-            fSreenWindow.Grid.Children.Add(VlcControl);
-            fSreenWindow.Show();
+            fScreenWindow.Grid.Children.Add(VlcControl);
+            fScreenWindow.Show();
         }
     }
 }

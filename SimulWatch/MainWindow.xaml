@@ -62,8 +62,8 @@
                              Width="75"
                              Name="Volume"/>
                 <Image Style="{StaticResource ControlButton}" MouseDown="VolumeRaise" Source="Assets/volume-up-interface-symbol.png"/>
-                <Button Margin="10" Width="30" Content="Skip" Click="SkipIntro"/>
-                <Button Margin="10" Width="30" Content="to Start" Click="ToStart"/>
+                <Image Style="{StaticResource ControlButton}" MouseDown="SkipIntro" Source="Assets/next.png"/>
+                <Image Style="{StaticResource ControlButton}" MouseDown="ToStart" Source="Assets/return.png"/>
                 <Image Style="{StaticResource ControlButton}" MouseDown="FullScreenMode" Source="Assets/fullscreen.png"/>
                 
         </StackPanel>

@@ -27,7 +27,7 @@ namespace SimulWatch.Net
             App.Current.Dispatcher.Invoke(() =>
             {
                 MainWindow window = (MainWindow)App.Current.MainWindow;
-                window.host = this;
+                window.Host = this;
             });
             client = server.AcceptTcpClient();
 
@@ -90,7 +90,7 @@ namespace SimulWatch.Net
                     {
                         length[1] = (byte)(source.Length % 255);
                     }
-                    while (source.Length % 255 > 255)
+                    while (source.Length % 255 >= 255)
                     {
                         length[index] = 255;
                         index++;

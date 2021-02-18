@@ -52,13 +52,13 @@ namespace SimulWatch.Net
                 case SyncAction.Pause:
                     App.Current.Dispatcher.Invoke(() =>
                     {
-                        mainWindow.mediaPlayer.Pause();
+                        mainWindow.MediaPlayer.Pause();
                     });
                     break;
                 case SyncAction.Play:
                     App.Current.Dispatcher.Invoke(() =>
                     {
-                        mainWindow.mediaPlayer.Play();
+                        mainWindow.MediaPlayer.Play();
                     });
                     break;
                 case SyncAction.SkipIntro:
@@ -84,7 +84,7 @@ namespace SimulWatch.Net
                     Debug.WriteLine($"encoded URL was {url}");
                     App.Current.Dispatcher.Invoke(() =>
                     {
-                        mainWindow.mediaPlayer.Play(url);
+                        mainWindow.MediaPlayer.Play(url);
                     });
                     break;
                 case SyncAction.GoToStart:

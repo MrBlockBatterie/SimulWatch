@@ -4,6 +4,8 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using System.Windows.Media.Animation;
 using SimulWatch.Net;
 using Vlc.DotNet.Core;
 
@@ -15,8 +17,11 @@ namespace SimulWatch
     public partial class MainWindow
     {
 
+        private readonly DoubleAnimation fadeIn = new DoubleAnimation(0, 1, new Duration(TimeSpan.FromSeconds(0.2)));
+        private readonly DoubleAnimation fadeOut = new DoubleAnimation(1, 0, new Duration(TimeSpan.FromSeconds(0.2)));
         private bool _isHost;
-        public bool IsHost
+
+        private bool IsHost
         {
             get => _isHost;
             set
@@ -44,6 +49,7 @@ namespace SimulWatch
             var options = new string[]
             {
                 // VLC options can be given here. Please refer to the VLC command line documentation.
+                "--fullscreen"
             };
             VlcControl.SourceProvider.CreatePlayer(vlcLibDirectory, options);
             mediaPlayer = VlcControl.SourceProvider.MediaPlayer;
@@ -124,7 +130,8 @@ namespace SimulWatch
             Thread hostThread = new Thread(() => host = new Host());
             hostThread.Start();
             IsHost = true;
-            
+            Title += " {Hosting}";
+
         }
 
         private void NewButton_Click(object sender, RoutedEventArgs e)
@@ -142,7 +149,12 @@ namespace SimulWatch
         private void OpenStream(object sender, RoutedEventArgs e)
         {
             mediaPlayer.Play(StreamURL.Text);
-            host.SendPackage(StreamURL.Text);
+            if (IsHost)
+            {
+                host.SendPackage(StreamURL.Text);
+            }
+
+            
         }
 
         public void ToStart(object sender, RoutedEventArgs e)
@@ -153,6 +165,24 @@ namespace SimulWatch
             {
                 host.SendPackage(SyncAction.GoToStart);
             }
+        }
+
+        private void StackPanel_OnMouseEnter(object sender, MouseEventArgs e)
+        {
+            StackPanel.BeginAnimation(OpacityProperty, fadeIn);
+        }
+
+        private void StackPanel_OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            StackPanel.BeginAnimation(OpacityProperty, fadeOut);
+        }
+
+        private void FullScreenMode(object sender, MouseButtonEventArgs e)
+        {
+            FullscreenWindow fSreenWindow = new FullscreenWindow();
+            Dock.Children.Remove(VlcControl);
+            fSreenWindow.Grid.Children.Add(VlcControl);
+            fSreenWindow.Show();
         }
     }
 }

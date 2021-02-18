@@ -205,8 +205,12 @@
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
         </ApplicationDefinition>
+        <Compile Include="FullscreenWindow.xaml.cs">
+          <DependentUpon>FullscreenWindow.xaml</DependentUpon>
+        </Compile>
         <Compile Include="Utility\Extension.cs" />
         <Page Include="ConnectionWindow.xaml" />
+        <Page Include="FullscreenWindow.xaml" />
         <Page Include="MainWindow.xaml">
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
@@ -245,6 +249,9 @@
         <None Include="packages.config" />
     </ItemGroup>
     <ItemGroup>
+      <Content Include="Assets\fullscreen.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
       <Content Include="Assets\pause-play-button.png">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>

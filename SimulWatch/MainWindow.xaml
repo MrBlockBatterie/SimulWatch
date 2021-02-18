@@ -16,7 +16,7 @@
         </ContextMenu>
     </Window.Resources>
     <Grid>
-        <DockPanel>
+        <DockPanel Name="Dock">
             <ToolBarTray DockPanel.Dock="Top"
                          Background="{StaticResource Menubar}"
                          Height="30">
@@ -50,7 +50,12 @@
         </DockPanel>
         <StackPanel Orientation="Horizontal"
                     Height="40"
-                    VerticalAlignment="Bottom">
+                    VerticalAlignment="Bottom"
+                    Background="Black"
+                    Opacity="0"
+                    Name="StackPanel"
+                    MouseEnter="StackPanel_OnMouseEnter"
+                    MouseLeave="StackPanel_OnMouseLeave">
                 <Image Style="{StaticResource ControlButton}" MouseDown="PlayPauseButton" Source="Assets/pause-play-button.png"/>
                 <Image Style="{StaticResource ControlButton}" MouseDown="VolumeLower" Source="Assets/volume-off.png"/>
                 <ProgressBar Margin="10"
@@ -59,6 +64,7 @@
                 <Image Style="{StaticResource ControlButton}" MouseDown="VolumeRaise" Source="Assets/volume-up-interface-symbol.png"/>
                 <Button Margin="10" Width="30" Content="Skip" Click="SkipIntro"/>
                 <Button Margin="10" Width="30" Content="to Start" Click="ToStart"/>
+                <Image Style="{StaticResource ControlButton}" MouseDown="FullScreenMode" Source="Assets/fullscreen.png"/>
                 
         </StackPanel>
         

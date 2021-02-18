@@ -13,8 +13,10 @@ namespace SimulWatch.Net
     {
         private NetworkStream stream;
         private TcpClient client;
+        private string _ip;
         public Client(string IP)
         {
+            _ip = IP;
             client = new TcpClient(IP, 7979);
             Debug.WriteLine("connecting to "+IP+"...");
             Thread await = new Thread(() => AwaitCommands());
@@ -42,6 +44,7 @@ namespace SimulWatch.Net
             App.Current.Dispatcher.Invoke(() =>
             {
                 mainWindow = (MainWindow)App.Current.MainWindow;
+                mainWindow.Title += " {" + $"connected to {this._ip}" + "}";
             });
             Debug.WriteLine($"Recieved action was {data[5]}");
             switch ((SyncAction)data[5])

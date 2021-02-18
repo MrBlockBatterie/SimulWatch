@@ -1,0 +1,24 @@
+﻿<Window x:Class="SimulWatch.ConnectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:SimulWatch"
+        mc:Ignorable="d"
+        Title="ConnectionWindow" Height="70" Width="300">
+    <Grid>
+        <DockPanel>
+            <TextBox Height="30"
+                    VerticalAlignment="Top"
+                    Margin="5"
+                    DockPanel.Dock="Top"
+                    Name="TextBox">
+            
+            </TextBox>
+            <Button Margin="5"
+                    Width="70"
+                    HorizontalAlignment="Left"
+                    Click="ConnectToHost"> Connect </Button>
+        </DockPanel>
+    </Grid>
+</Window>

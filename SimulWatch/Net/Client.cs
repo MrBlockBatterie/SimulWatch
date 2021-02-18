@@ -16,7 +16,7 @@ namespace SimulWatch.Net
         public Client(string IP)
         {
             client = new TcpClient(IP, 7979);
-            Debug.WriteLine("connecting to "+IP+" ...");
+            Debug.WriteLine("connecting to "+IP+"...");
             Thread await = new Thread(() => AwaitCommands());
             await.Start();
         }
@@ -31,14 +31,20 @@ namespace SimulWatch.Net
             byte[] data = new byte[length[0]];
             stream.Read(data, 1, length[0]);
             */
-            byte[] data = new byte[2];
-            stream.Read(data, 0, 2);
+            byte[] data = new byte[6];
+            stream.Read(data, 0, 6);
+            Debug.Write("Recieved bytes: ");
+            foreach (var b in data)
+            {
+                Debug.Write(b+" ");
+            }
             MainWindow mainWindow = null;
             App.Current.Dispatcher.Invoke(() =>
             {
                 mainWindow = (MainWindow)App.Current.MainWindow;
             });
-            switch ((SyncAction)data[0])
+            Debug.WriteLine($"Recieved action was {data[5]}");
+            switch ((SyncAction)data[5])
             {
                 case SyncAction.Pause:
                     App.Current.Dispatcher.Invoke(() =>
@@ -56,6 +62,32 @@ namespace SimulWatch.Net
                     App.Current.Dispatcher.Invoke(() =>
                     {
                         mainWindow.SkipIntro(null,null);
+                    });
+                    break;
+                case SyncAction.LoadSource:
+                    int length = 0;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        length += data[i];
+                    }
+                    Debug.WriteLine($"Message is {length} bytes long");
+                    byte[] stringData = new byte[length];
+                    stream.Read(stringData, 0, length);
+                    foreach (var b in stringData)
+                    {
+                        Debug.Write(b+" ");
+                    }
+                    string url = System.Text.Encoding.ASCII.GetString(stringData);
+                    Debug.WriteLine($"encoded URL was {url}");
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        mainWindow.mediaPlayer.Play(url);
+                    });
+                    break;
+                case SyncAction.GoToStart:
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        mainWindow.ToStart(null,null);
                     });
                     break;
             }

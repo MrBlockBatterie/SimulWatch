@@ -24,12 +24,19 @@
                     <Button Click="NewButton_Click" Content="New">
                         <Button.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Click="NewConnectionWindow">Connection</MenuItem>
-                                <MenuItem Click="HostSession">Host Session</MenuItem>
+                                <MenuItem Click="NewConnectionWindow" Header="Connect"/>
+                                <MenuItem Click="HostSession" Header="Host Session"/>
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
-                    <Button Command="Open" Content="Open" />
+                    <Button Click="OpenButton_Click" Content="Open">
+                        <Button.ContextMenu>
+                            <ContextMenu>
+                                <TextBox Width="100" Name="StreamURL"/>
+                                <MenuItem Header="Open Stream" Click="OpenStream" IsEnabled="True" Name="OpenStreamItem"/>
+                            </ContextMenu>
+                        </Button.ContextMenu>
+                    </Button>
                     
                 </ToolBar>
             </ToolBarTray>
@@ -50,7 +57,8 @@
                              Width="75"
                              Name="Volume"/>
                 <Image Style="{StaticResource ControlButton}" MouseDown="VolumeRaise" Source="Assets/volume-up-interface-symbol.png"/>
-                <Button Margin="10" Width="30" Click="SkipIntro"/>
+                <Button Margin="10" Width="30" Content="Skip" Click="SkipIntro"/>
+                <Button Margin="10" Width="30" Content="to Start" Click="ToStart"/>
                 
         </StackPanel>
         

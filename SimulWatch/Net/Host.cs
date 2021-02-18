@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
+using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Threading;
+using SimulWatch.Utility;
 
 namespace SimulWatch.Net
 {
@@ -38,7 +43,7 @@ namespace SimulWatch.Net
                 case SyncAction.Pause:
                     data = new byte[]
                     {
-                        1,
+                        1,0,0,0,0,
                         (byte)SyncAction.Pause
                     };
                     stream.Write(data,0,data.Length);
@@ -46,7 +51,7 @@ namespace SimulWatch.Net
                 case SyncAction.Play:
                     data = new byte[]
                     {
-                        1,
+                        1,0,0,0,0,
                         (byte)SyncAction.Play
                     };
                     stream.Write(data,0,data.Length);
@@ -54,8 +59,16 @@ namespace SimulWatch.Net
                 case SyncAction.SkipIntro:
                     data = new byte[]
                     {
-                        1,
+                        1,0,0,0,0,
                         (byte)SyncAction.SkipIntro
+                    };
+                    stream.Write(data,0,data.Length);
+                    break;
+                case SyncAction.GoToStart:
+                    data = new byte[]
+                    {
+                        1,0,0,0,0,
+                        (byte)SyncAction.GoToStart
                     };
                     stream.Write(data,0,data.Length);
                     break;
@@ -64,7 +77,46 @@ namespace SimulWatch.Net
 
         public void SendPackage(string source, SyncAction action = SyncAction.LoadSource)
         {
-            
+            if (action == SyncAction.LoadSource)
+            {
+                Debug.WriteLine($"Message is {source.Length} bytes long");
+                byte[] length = new Byte[]{0,0,0,0,0};
+                if (source.Length > 255)
+                {
+                    length[0] = 255;
+                    int index = 1;
+                    
+                    if (source.Length % 255 <= 255)
+                    {
+                        length[1] = (byte)(source.Length % 255);
+                    }
+                    while (source.Length % 255 > 255)
+                    {
+                        length[index] = 255;
+                        index++;
+                        if (source.Length % 255 <= 255)
+                        {
+                            length[index] = (byte)(source.Length % 255);
+                        }
+                    }
+                }
+                else
+                {
+                    length[0] = (byte)source.Length;
+                }
+                byte[] lengthBytes = new byte[]
+                {
+                    length[0],
+                    length[1],
+                    length[2],
+                    length[3],
+                    length[4],
+                    (byte)SyncAction.LoadSource
+                };
+                byte[] bytes = Encoding.ASCII.GetBytes(source);
+                byte[] finalData = lengthBytes.Concatenate(bytes);
+                stream.Write(finalData,0,finalData.Length);
+            }
         }
         public static IPAddress GetLocalIPAddress()
         {

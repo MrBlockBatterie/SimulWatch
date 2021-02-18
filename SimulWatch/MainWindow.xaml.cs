@@ -14,7 +14,17 @@ namespace SimulWatch
     /// </summary>
     public partial class MainWindow
     {
-        public bool IsHost = false;
+
+        private bool _isHost;
+        public bool IsHost
+        {
+            get => _isHost;
+            set
+            {
+                _isHost = value;
+                OpenStreamItem.IsEnabled = true;
+            }
+        }
         public VlcMediaPlayer mediaPlayer;
         public Host host;
         public MainWindow()
@@ -23,7 +33,7 @@ namespace SimulWatch
             InitMediaPlayer();
             mediaPlayer.MediaChanged += delegate(object sender, VlcMediaPlayerMediaChangedEventArgs args) { mediaPlayer.Pause(); };
             
-            mediaPlayer.Play("https://s27.stream.proxer.me/files/2/ehv0g7davh9vxa/video.mp4");
+            //mediaPlayer.Play("https://s27.stream.proxer.me/files/2/ehv0g7davh9vxa/video.mp4");
             
         }
 
@@ -60,12 +70,7 @@ namespace SimulWatch
             
         }
 
-        private void NewButton_Click(object sender, RoutedEventArgs e)
-        {
-            var button = (Button) sender;
-            button.ContextMenu.IsOpen = true;
-            
-        }
+        
 
         private void VolumeLower(object sender, RoutedEventArgs e)
         {
@@ -119,6 +124,35 @@ namespace SimulWatch
             Thread hostThread = new Thread(() => host = new Host());
             hostThread.Start();
             IsHost = true;
+            
+        }
+
+        private void NewButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = (Button) sender;
+            button.ContextMenu.IsOpen = true;
+            
+        }
+        private void OpenButton_Click(object sender, RoutedEventArgs e)
+        {
+            var but = (Button) sender;
+            but.ContextMenu.IsOpen = true;
+        }
+
+        private void OpenStream(object sender, RoutedEventArgs e)
+        {
+            mediaPlayer.Play(StreamURL.Text);
+            host.SendPackage(StreamURL.Text);
+        }
+
+        public void ToStart(object sender, RoutedEventArgs e)
+        {
+            mediaPlayer.Position = 0;
+            mediaPlayer.Pause();
+            if (IsHost)
+            {
+                host.SendPackage(SyncAction.GoToStart);
+            }
         }
     }
 }

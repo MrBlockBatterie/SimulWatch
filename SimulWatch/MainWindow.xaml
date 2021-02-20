@@ -33,6 +33,9 @@
                             <ContextMenu>
                                 <TextBox Width="100" Name="StreamURL"/>
                                 <MenuItem Header="Open Stream" Click="OpenStream" IsEnabled="True" Name="OpenStreamItem"/>
+                                <Separator/>
+                                <MenuItem Header="Open Browser" Click="OpenBrowser"/>
+                                <MenuItem Header="Copy Link" Click="CopyStreamLink"/>
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>

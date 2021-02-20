@@ -44,8 +44,8 @@ namespace SimulWatch.Net
                 case SyncAction.Pause:
                     data = new byte[]
                     {
-                        1,0,0,0,0,
-                        (byte)SyncAction.Pause
+                        1, 0, 0, 0, 0,
+                        (byte) SyncAction.Pause
                     };
                     stream.Write(data,0,data.Length);
                     break;

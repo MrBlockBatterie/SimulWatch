@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using HtmlAgilityPack;
+
 using SimulWatch.Net;
 using SimulWatch.Utility;
 using Vlc.DotNet.Core;
@@ -39,11 +42,22 @@ namespace SimulWatch
             InitializeComponent();
             InitMediaPlayer();
             MediaPlayer.MediaChanged += delegate(object sender, VlcMediaPlayerMediaChangedEventArgs args) { MediaPlayer.SetPause(true); };
+            MediaPlayer.TimeChanged += MediaPlayerOnTimeChanged;
             Volume.Value = MediaPlayer.Audio.Volume;
-            var discord = new Discord();
+            var browser = new InternetBrowser();
+            browser.Show();
 
             //mediaPlayer.Play("https://s27.stream.proxer.me/files/2/ehv0g7davh9vxa/video.mp4");
 
+        }
+
+        private void MediaPlayerOnTimeChanged(object sender, VlcMediaPlayerTimeChangedEventArgs e)
+        {
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                Slider.Value = Math.Floor((double)(e.NewTime/500));
+            });
+            
         }
 
         private void InitMediaPlayer()
@@ -159,6 +173,7 @@ namespace SimulWatch
 
         private void OpenStream(object sender, RoutedEventArgs e)
         {
+            
             MediaPlayer.Play(StreamURL.Text);
             
             if (IsHost)
@@ -199,6 +214,22 @@ namespace SimulWatch
             Dock.Children.Remove(VlcControl);
             fScreenWindow.Grid.Children.Add(VlcControl);
             fScreenWindow.Show();
+        }
+
+        private void OpenBrowser(object sender, RoutedEventArgs e)
+        {
+            
+            
+            
+        }
+
+        private void CopyStreamLink(object sender, RoutedEventArgs e)
+        {
+            var doc = new HtmlDocument();
+            
+            doc.LoadHtml("");
+            Debug.WriteLine(doc.DocumentNode.Descendants("source").First(node => node.Attributes.Contains("src"))
+                .GetAttributeValue("src", "no link"));
         }
     }
 }

@@ -4,10 +4,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:local="clr-namespace:SimulWatch"
-        
+        xmlns:controls="clr-namespace:Microsoft.Toolkit.Wpf.UI.Controls;assembly=Microsoft.Toolkit.Wpf.UI.Controls.WebView"
+        xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+
         mc:Ignorable="d"
         Title="InternetBrowser" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <DockPanel>
+        <Grid DockPanel.Dock="Top" Background="{StaticResource Menubar}" Height="30"
+              VerticalAlignment="Top">
+            <ToolBarTray DockPanel.Dock="Top"
+                         Background="{StaticResource Menubar}"
+                         Height="30">
+                <ToolBar Background="#505050">
+                    <Button Click="OpenButton_Click" Content="Insert Link">
+                        
+                    </Button>
+                    
+                </ToolBar>
+            </ToolBarTray>
+            
+        </Grid>
+        <controls:WebView DockPanel.Dock="Top" Name="Browser" Source="https://proxer.me"/>
+    </DockPanel>
 </Window>

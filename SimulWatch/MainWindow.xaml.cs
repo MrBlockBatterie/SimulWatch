@@ -9,7 +9,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 using HtmlAgilityPack;
-
+using Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT;
 using SimulWatch.Net;
 using SimulWatch.Utility;
 using Vlc.DotNet.Core;
@@ -24,7 +24,10 @@ namespace SimulWatch
 
         private readonly DoubleAnimation fadeIn = new DoubleAnimation(0, 1, new Duration(TimeSpan.FromSeconds(0.2)));
         private readonly DoubleAnimation fadeOut = new DoubleAnimation(1, 0, new Duration(TimeSpan.FromSeconds(0.2)));
+        
         private bool _isHost;
+
+        private InternetBrowser Browser => new InternetBrowser();
 
         private bool IsHost
         {
@@ -41,11 +44,30 @@ namespace SimulWatch
         {
             InitializeComponent();
             InitMediaPlayer();
-            MediaPlayer.MediaChanged += delegate(object sender, VlcMediaPlayerMediaChangedEventArgs args) { MediaPlayer.SetPause(true); };
+            MediaPlayer.MediaChanged += delegate(object sender, VlcMediaPlayerMediaChangedEventArgs args)
+            {
+                MediaPlayer.SetPause(true);
+                
+                Thread test = new Thread(() =>
+                {
+                    Thread.Sleep(1000);
+                    var length = MediaPlayer.GetMedia().Duration.ToString(@"h\:mm\:ss");
+                   
+
+                    App.Current.Dispatcher.Invoke(() =>
+                    {
+                        TotalLength.Content = length; 
+                    
+                    });
+                });
+                
+                test.Start();
+                
+
+            };
             MediaPlayer.TimeChanged += MediaPlayerOnTimeChanged;
             Volume.Value = MediaPlayer.Audio.Volume;
-            var browser = new InternetBrowser();
-            browser.Show();
+            
 
             //mediaPlayer.Play("https://s27.stream.proxer.me/files/2/ehv0g7davh9vxa/video.mp4");
 
@@ -53,11 +75,16 @@ namespace SimulWatch
 
         private void MediaPlayerOnTimeChanged(object sender, VlcMediaPlayerTimeChangedEventArgs e)
         {
-            App.Current.Dispatcher.Invoke(() =>
+            //Debug.WriteLine(MediaPlayer.Time % 100);
+            if (MediaPlayer.Time % 100 <= 49) return;
+            var time = TimeSpan.FromMilliseconds(e.NewTime);
+            var length = time.ToString(@"h\:mm\:ss");
+                
+            Debug.WriteLine(e.NewTime);
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                Slider.Value = Math.Floor((double)(e.NewTime/500));
+                CurrentTime.Content = length;
             });
-            
         }
 
         private void InitMediaPlayer()
@@ -66,7 +93,7 @@ namespace SimulWatch
 
             var options = new string[]
             {
-                // VLC options can be given here. Please refer to the VLC command line documentation.
+                "--demux", "h264"
             };
             VlcControl.SourceProvider.CreatePlayer(vlcLibDirectory, options);
             MediaPlayer = VlcControl.SourceProvider.MediaPlayer;
@@ -74,6 +101,7 @@ namespace SimulWatch
 
         private void PlayPauseButton(object sender, RoutedEventArgs e)
         {
+            
             if (MediaPlayer.IsPlaying())
             {
                 MediaPlayer.Pause();
@@ -218,18 +246,41 @@ namespace SimulWatch
 
         private void OpenBrowser(object sender, RoutedEventArgs e)
         {
+            Browser.Show();
+
+
+        }
+
+        private async void CopyStreamLink(object sender, RoutedEventArgs e)
+        {
+            var doc = new HtmlDocument();
+
+            //Debug.WriteLine(Browser.Browser.InvokeScriptAsync("eval", new string[] { "document.documentElement.outerHTML;" }).Result);
+            var html = await Browser.Browser.InvokeScriptAsync("eval", new string[] {"document.documentElement.outerHTML;"});
+            doc.LoadHtml(html);
+
+            var link = doc.DocumentNode.Descendants("iframe").First().GetAttributeValue("src", "no link");
+            Debug.WriteLine(link);
             
+            Browser.Browser.Navigate(link);
+            
+            Browser.Browser.NavigationCompleted += async delegate(object o, WebViewControlNavigationCompletedEventArgs args)
+            {
+                html = await Browser.Browser.InvokeScriptAsync("eval", new string[] {"document.documentElement.outerHTML;"});
+                doc.LoadHtml(html);
+                var mp4 = doc.DocumentNode.Descendants("source").First().GetAttributeValue("src", "no link");
+                Debug.WriteLine(mp4);
+                
+                Browser.Browser.NavigationCompleted += null;
+                Browser.Browser.GoBack();
+            };
             
             
         }
 
-        private void CopyStreamLink(object sender, RoutedEventArgs e)
+        private void Debug_Click(object sender, RoutedEventArgs e)
         {
-            var doc = new HtmlDocument();
-            
-            doc.LoadHtml("");
-            Debug.WriteLine(doc.DocumentNode.Descendants("source").First(node => node.Attributes.Contains("src"))
-                .GetAttributeValue("src", "no link"));
+            throw new NotImplementedException();
         }
     }
 }

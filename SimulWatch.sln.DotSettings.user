@@ -1,4 +1,6 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cmauri_005Csource_005Crepos_005CSimulWatch_005CSimulWatch_005Clib_005Cmpv_002D1_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
   &lt;Assembly Path="C:\Users\mauri\source\repos\SimulWatch\packages\CefSharp.Common.88.2.40-pre\lib\net452\CefSharp.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\mauri\source\repos\SimulWatch\SimulWatch\lib\mpv-1.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>

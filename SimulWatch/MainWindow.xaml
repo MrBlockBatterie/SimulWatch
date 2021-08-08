@@ -6,6 +6,8 @@
         xmlns:local="clr-namespace:SimulWatch"
         xmlns:eo="http://schemas.essentialobjects.com/wpf/"
         xmlns:wpf1="clr-namespace:Vlc.DotNet.Wpf;assembly=Vlc.DotNet.Wpf"
+        xmlns:player="clr-namespace:Mpv.NET.Player;assembly=Mpv.NET"
+        xmlns:mpvPlayerUi="clr-namespace:EmergenceGuardian.MpvPlayerUI;assembly=MpvPlayerUI"
 
         mc:Ignorable="d"
         Title="MainWindow" Height="720" Width="1080" d:DesignHeight="300" d:DesignWidth="500">
@@ -39,15 +41,21 @@
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
+                    <Button Click="Debug_Click" Content="Debug"/>
                     
                 </ToolBar>
             </ToolBarTray>
             
-            
+            <!-->
+            <mpvPlayerUi:MpvMediaPlayer x:Name="Player"/>
+            <-!-->
             <wpf1:VlcControl Name="VlcControl"
-                             DockPanel.Dock="Top">
+                             DockPanel.Dock="Top"
+                             Width="0"
+                             Height="0">
                 
             </wpf1:VlcControl>
+            
             
         </DockPanel>
         <DockPanel 
@@ -72,11 +80,42 @@
                 <Image Style="{StaticResource ControlButton}" MouseDown="VolumeLower" Source="Assets/volume-off.png"/>
                 <ProgressBar Margin="10"
                              Width="75"
-                             Name="Volume"/>
+                             Name="Volume">
+                    <ProgressBar.OpacityMask>
+                        <DrawingBrush>
+                            <DrawingBrush.Drawing>
+                                <GeometryDrawing>
+                                    <GeometryDrawing.Geometry>
+                                        <PathGeometry>
+                                            <PathGeometry.Figures>
+                                                <PathFigureCollection>
+                                                    <PathFigure IsClosed="True" StartPoint="1,1">
+                                                        <PathFigure.Segments>
+                                                            <PathSegmentCollection>
+                                                                <LineSegment Point="0,1" />
+                                                                <LineSegment Point="1,0" />
+                                                            </PathSegmentCollection>
+                                                        </PathFigure.Segments>
+                                                    </PathFigure>
+                                                </PathFigureCollection>
+                                            </PathGeometry.Figures>
+                                        </PathGeometry>
+                                    </GeometryDrawing.Geometry>
+                                    <GeometryDrawing.Brush>
+                                        <SolidColorBrush Color="Black"/>
+                                    </GeometryDrawing.Brush>
+                                </GeometryDrawing>
+                            </DrawingBrush.Drawing>
+                        </DrawingBrush>
+                    </ProgressBar.OpacityMask>
+                </ProgressBar>
                 <Image Style="{StaticResource ControlButton}" MouseDown="VolumeRaise" Source="Assets/volume-up-interface-symbol.png"/>
                 <Image Style="{StaticResource ControlButton}" MouseDown="SkipIntro" Source="Assets/next.png"/>
                 <Image Style="{StaticResource ControlButton}" MouseDown="ToStart" Source="Assets/return.png"/>
                 <Image Style="{StaticResource ControlButton}" MouseDown="FullScreenMode" Source="Assets/fullscreen.png"/>
+                <Label Foreground="White" Content="0:00" FontSize="20" HorizontalAlignment="Right" Name="CurrentTime"/>
+                <Label Foreground="White" Content="/" FontSize="20"/>
+                <Label Foreground="White" Content="0:00" FontSize="20" HorizontalAlignment="Right" Name="TotalLength"/>
                 
             </StackPanel>
             

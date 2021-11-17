@@ -21,7 +21,7 @@ namespace SimulWatch.Net
         private List<NetworkStream> clientNStreams = new List<NetworkStream>();
         private List<Thread> clientThreads = new List<Thread>();
         //private NetworkStream stream;
-        public Host()
+        public Host() //Deprecated
         {
             IPAddress ipAddress = Dns.Resolve("93.215.210.210").AddressList[0];
             IPAddress localip = GetLocalIPAddress();
@@ -34,7 +34,7 @@ namespace SimulWatch.Net
             App.Current.Dispatcher.Invoke(() =>
             {
                 MainWindow window = (MainWindow)App.Current.MainWindow;
-                window.Host = this;
+                //window.C = this;
             });
 
             A:

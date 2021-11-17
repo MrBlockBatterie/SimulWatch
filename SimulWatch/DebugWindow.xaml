@@ -6,7 +6,55 @@
         xmlns:local="clr-namespace:SimulWatch"
         mc:Ignorable="d"
         Title="DebugWindow" Height="450" Width="800">
-    <Grid>
-        <Button></Button>
-    </Grid>
+    <TabControl>
+        <TabItem Header="Server">
+            <Grid>
+                <DockPanel>
+                    <DockPanel DockPanel.Dock="Top">
+                        
+                        <Button Margin="10"
+                                Width="100"
+                                DockPanel.Dock="Left">
+                                Start Server
+                        </Button>
+                        
+                    </DockPanel>
+                    
+                
+                    
+                        <Grid DockPanel.Dock="Top" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <DockPanel Grid.Column="0">
+                                <Label DockPanel.Dock="Top"> Active Users </Label>
+                                <ListView Margin="10" Name="UserList">
+                                    
+                                </ListView>
+                            </DockPanel>
+                            <Separator Background="Black" Grid.Column="1">
+                                <Separator.LayoutTransform>
+                                    <RotateTransform Angle="90" />
+                                </Separator.LayoutTransform>
+                            </Separator>
+                            <DockPanel Grid.Column="2">
+                                <Label DockPanel.Dock="Top">Log</Label>
+                                <RichTextBox Margin="10" VerticalScrollBarVisibility="Visible" IsReadOnly="True">
+                        
+                                </RichTextBox>
+                            </DockPanel>
+                        </Grid>
+                    </DockPanel>
+                
+                
+            </Grid>
+            
+            
+        </TabItem>
+        <TabItem Header="Debug">
+            Server
+        </TabItem>
+    </TabControl>
 </Window>

@@ -6,8 +6,11 @@
         xmlns:local="clr-namespace:SimulWatch"
         xmlns:eo="http://schemas.essentialobjects.com/wpf/"
         xmlns:wpf1="clr-namespace:Vlc.DotNet.Wpf;assembly=Vlc.DotNet.Wpf"
+        xmlns:libVlcSharp="clr-namespace:LibVLCSharp.WPF;assembly=LibVLCSharp.WPF"
         xmlns:player="clr-namespace:Mpv.NET.Player;assembly=Mpv.NET"
         xmlns:mpvPlayerUi="clr-namespace:EmergenceGuardian.MpvPlayerUI;assembly=MpvPlayerUI"
+        xmlns:shared="clr-namespace:LibVLCSharp.Shared;assembly=LibVLCSharp"
+        xmlns:windowsForms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
 
         mc:Ignorable="d"
         Title="MainWindow" Height="720" Width="1080" d:DesignHeight="300" d:DesignWidth="500">
@@ -26,7 +29,7 @@
                         <Button.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Click="NewConnectionWindow" Header="Connect"/>
-                                <MenuItem Click="HostSession" Header="Host Session"/>
+                                <MenuItem Click="HostSession" Header="Host Session" IsEnabled="False"/>
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
@@ -41,7 +44,9 @@
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>
-                    <Button Click="Debug_Click" Content="Debug"/>
+                    <Button Click="Debug_Click" Content="Debug">
+                        
+                    </Button>
                     
                 </ToolBar>
             </ToolBarTray>
@@ -49,12 +54,21 @@
             <!-->
             <mpvPlayerUi:MpvMediaPlayer x:Name="Player"/>
             <-!-->
+            
+            
+            <WindowsFormsHost Name="FormsHost">
+                <windowsForms:Panel x:Name="PlayerHost" />
+            </WindowsFormsHost>
+            <!-->
             <wpf1:VlcControl Name="VlcControl"
                              DockPanel.Dock="Top"
                              Width="0"
-                             Height="0">
+                             Height="0"
+                             Visibility="Hidden">
                 
             </wpf1:VlcControl>
+            <-!-->
+            
             
             
         </DockPanel>

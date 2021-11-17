@@ -10,9 +10,12 @@ using System.Windows.Input;
 using System.Windows.Media.Animation;
 using HtmlAgilityPack;
 using Microsoft.Toolkit.Win32.UI.Controls.Interop.WinRT;
+using Mpv.NET.Player;
 using SimulWatch.Net;
 using SimulWatch.Utility;
 using Vlc.DotNet.Core;
+using Vlc.DotNet.Wpf;
+using YoutubeDLSharp;
 
 namespace SimulWatch
 {
@@ -39,55 +42,33 @@ namespace SimulWatch
             }
         }
         public VlcMediaPlayer MediaPlayer;
-        public Host Host;
+        public MpvPlayer Player;
+        public CombinedClient CombinedClient;
         public MainWindow()
         {
             InitializeComponent();
             InitMediaPlayer();
-            MediaPlayer.MediaChanged += delegate(object sender, VlcMediaPlayerMediaChangedEventArgs args)
-            {
-                MediaPlayer.SetPause(true);
-                
-                Thread test = new Thread(() =>
-                {
-                    Thread.Sleep(1000);
-                    var length = MediaPlayer.GetMedia().Duration.ToString(@"h\:mm\:ss");
-                   
 
-                    App.Current.Dispatcher.Invoke(() =>
-                    {
-                        TotalLength.Content = length; 
-                    
-                    });
-                });
-                
-                test.Start();
-                
 
-            };
-            MediaPlayer.TimeChanged += MediaPlayerOnTimeChanged;
-            Volume.Value = MediaPlayer.Audio.Volume;
-            
 
             //mediaPlayer.Play("https://s27.stream.proxer.me/files/2/ehv0g7davh9vxa/video.mp4");
 
         }
 
-        private void MediaPlayerOnTimeChanged(object sender, VlcMediaPlayerTimeChangedEventArgs e)
+        private void InitMediaPlayer()
         {
-            //Debug.WriteLine(MediaPlayer.Time % 100);
-            if (MediaPlayer.Time % 100 <= 49) return;
-            var time = TimeSpan.FromMilliseconds(e.NewTime);
-            var length = time.ToString(@"h\:mm\:ss");
-                
-            Debug.WriteLine(e.NewTime);
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                CurrentTime.Content = length;
-            });
+            Player = new MpvPlayer(PlayerHost.Handle);
+            Player.EnableYouTubeDl();
+            Player.YouTubeDlVideoQuality = YouTubeDlVideoQuality.High;
+            Player.MediaLoaded += PlayerOnMediaLoaded;
         }
 
-        private void InitMediaPlayer()
+        private void PlayerOnMediaLoaded(object sender, EventArgs e)
+        {
+            Player.Resume();
+        }
+
+        private void InitMediaPlayerOld() //Old player
         {
             var vlcLibDirectory = new DirectoryInfo(Path.Combine(Environment.CurrentDirectory, "libvlc", IntPtr.Size == 4 ? "win-x86" : "win-x64"));
 
@@ -95,27 +76,26 @@ namespace SimulWatch
             {
                 "--demux", "h264"
             };
-            VlcControl.SourceProvider.CreatePlayer(vlcLibDirectory, options);
-            MediaPlayer = VlcControl.SourceProvider.MediaPlayer;
+            //VlcControl.SourceProvider.CreatePlayer(vlcLibDirectory, options);
+            //MediaPlayer = VlcControl.SourceProvider.MediaPlayer;
         }
 
+        
         private void PlayPauseButton(object sender, RoutedEventArgs e)
         {
             
             if (MediaPlayer.IsPlaying())
             {
-                MediaPlayer.Pause();
                 if (IsHost)
                 {
-                    Host.SendPackage(SyncAction.Pause);
+                    CombinedClient.SendPackage(SyncAction.Pause);
                 }
             }
             else
             {
-                MediaPlayer.Play();
                 if (IsHost)
                 {
-                    Host.SendPackage(SyncAction.Play);
+                    CombinedClient.SendPackage(SyncAction.Play);
                 }
             }
 
@@ -168,7 +148,7 @@ namespace SimulWatch
             MediaPlayer.Pause();
             if (IsHost)
             {
-                Host.SendPackage(SyncAction.SkipIntro);
+                CombinedClient.SendPackage(SyncAction.SkipIntro);
             }
         }
 
@@ -178,12 +158,12 @@ namespace SimulWatch
             window.Show();
         }
 
-        private void HostSession(object sender, RoutedEventArgs e)
+        private void HostSession(object sender, RoutedEventArgs e) //actually joining a session, but didnt rename, also pretty inefficient
         {
-            Thread hostThread = new Thread(() => Host = new Host());
+            Thread hostThread = new Thread(() => CombinedClient = new CombinedClient((string)sender));
             hostThread.Start();
             IsHost = true;
-            Title += " {Hosting}";
+            Title += " {Connected}";
 
         }
 
@@ -201,12 +181,13 @@ namespace SimulWatch
 
         private void OpenStream(object sender, RoutedEventArgs e)
         {
-            
-            MediaPlayer.Play(StreamURL.Text);
+
+            Player.Load(StreamURL.Text);
+            //MediaPlayer.Play(StreamURL.Text);
             
             if (IsHost)
             {
-                Host.SendPackage(StreamURL.Text);
+                CombinedClient.SendPackage(StreamURL.Text);
             }
 
             
@@ -221,7 +202,7 @@ namespace SimulWatch
             }
             if (IsHost)
             {
-                Host.SendPackage(SyncAction.GoToStart);
+                CombinedClient.SendPackage(SyncAction.GoToStart);
             }
             
         }
@@ -236,12 +217,12 @@ namespace SimulWatch
             StackPanel.BeginAnimation(OpacityProperty, fadeOut);
         }
 
-        private void FullScreenMode(object sender, MouseButtonEventArgs e)
+        public void FullScreenMode(object sender, MouseButtonEventArgs e)
         {
             var fScreenWindow = new FullscreenWindow();
-            Dock.Children.Remove(VlcControl);
-            fScreenWindow.Grid.Children.Add(VlcControl);
-            fScreenWindow.Show();
+            Dock.Children.Remove(FormsHost);
+            fScreenWindow.Grid.Children.Add(FormsHost);
+            //fScreenWindow.Show();
         }
 
         private void OpenBrowser(object sender, RoutedEventArgs e)
@@ -280,7 +261,9 @@ namespace SimulWatch
 
         private void Debug_Click(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            DebugWindow debugWindow = new DebugWindow(this);
+            debugWindow.Show();
         }
+        
     }
 }

@@ -7,25 +7,29 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using EmergenceGuardian.MediaPlayerUI;
 using SimulWatch.Utility;
 
 namespace SimulWatch.Net
 {
     public class CombinedClient
     {
-       private NetworkStream stream;
-        private TcpClient client;
+        private NetworkStream stream;
+        private TcpClient sendClient;
+        private TcpClient recieveClient;
         private string _ip;
         public CombinedClient(string IP)
         {
             _ip = IP;
-            client = new TcpClient(IP, 7979);
+            sendClient = new TcpClient(IP, 7978);
+            recieveClient = new TcpClient(IP, 7979);
             Debug.WriteLine("connecting to "+IP+"...");
             Thread await = new Thread(() => AwaitCommands());
             MainWindow mainWindow = null;
             App.Current.Dispatcher.Invoke(() =>
             {
                 mainWindow = (MainWindow)App.Current.MainWindow;
+                // mainWindow.CombinedClient = this;
                 mainWindow.Title += " {" + $"connected to {this._ip}" + "}";
             });
             await.Start();
@@ -34,7 +38,7 @@ namespace SimulWatch.Net
         private void AwaitCommands()
         {
             Await:
-            stream = client.GetStream();
+            stream = recieveClient.GetStream();
             /*
             byte[] length = new byte[1];
             stream.Read(length, 0, 1);
@@ -59,19 +63,19 @@ namespace SimulWatch.Net
                 case SyncAction.Pause:
                     App.Current.Dispatcher.Invoke(() =>
                     {
-                        mainWindow.MediaPlayer.Pause();
+                        mainWindow.Player.Pause();
                     });
                     break;
                 case SyncAction.Play:
                     App.Current.Dispatcher.Invoke(() =>
                     {
-                        mainWindow.MediaPlayer.Play();
+                        mainWindow.Player.Resume();
                     });
                     break;
                 case SyncAction.SkipIntro:
                     App.Current.Dispatcher.Invoke(() =>
                     {
-                        mainWindow.SkipIntro(null,null);
+                        //mainWindow.SkipIntro(null,null);
                     });
                     break;
                 case SyncAction.LoadSource:
@@ -91,7 +95,7 @@ namespace SimulWatch.Net
                     Debug.WriteLine($"encoded URL was {url}");
                     App.Current.Dispatcher.Invoke(() =>
                     {
-                        mainWindow.MediaPlayer.Play(url);
+                        mainWindow.Player.Load(url);
                     });
                     break;
                 case SyncAction.GoToStart:
@@ -105,7 +109,7 @@ namespace SimulWatch.Net
         }
         public void SendPackage(SyncAction action)
         {
-            using (var stream = client.GetStream())
+            using (var stream = sendClient.GetStream())
             {
                 byte[] data;
                 switch (action)
@@ -150,7 +154,7 @@ namespace SimulWatch.Net
         {
             if (action == SyncAction.LoadSource)
             {
-                using (var stream = client.GetStream())
+                using (var stream = sendClient.GetStream())
                 {
                     Debug.WriteLine($"Message is {source.Length} bytes long");
                     int stringLength = source.Length;

@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using SimulWatch.Net;
+using SimulWatch.Utility;
 
-namespace SimulWatch.Net
+namespace SimulServer
 {
     public static class Server
     {
@@ -16,11 +20,28 @@ namespace SimulWatch.Net
         private const int PORT = 7979;
         private static readonly byte[] buffer = new byte[2048];
 
-        public static void Start()
+        public static void Main()
         {
             Server.SetupServer();
             Console.ReadLine();
+            Server.TestSend();
             Server.CloseAllSockets();
+        }
+
+        private static void TestSend()
+        {
+            var data = new byte[]
+            {
+                0,
+                0,
+                0,
+                0,
+                0,
+                (byte)SyncAction.LoadSource
+            };
+                        
+            byte[] bytes = Encoding.ASCII.GetBytes("https://youtu.be/HNwWQ9zGT-8");
+            data = data.Concatenate(bytes);
         }
 
         private static void SetupServer()
@@ -65,6 +86,7 @@ namespace SimulWatch.Net
         private static void ReceiveCallback(IAsyncResult AR)
         {
             Socket asyncState = (Socket)AR.AsyncState;
+            Thread.Sleep(100);
             int length;
             try
             {
@@ -80,6 +102,7 @@ namespace SimulWatch.Net
 
             byte[] bytes1 = new byte[length];
             Array.Copy((Array)Server.buffer, (Array)bytes1, length);
+            Console.WriteLine($"Recieved {bytes1}, sending out");
 
             foreach (Socket socket in clientSockets)
             {

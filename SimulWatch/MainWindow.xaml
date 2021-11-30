@@ -29,7 +29,7 @@
                         <Button.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Click="NewConnectionWindow" Header="Connect"/>
-                                <MenuItem Click="HostSession" Header="Host Session" IsEnabled="False"/>
+                                <!-- <MenuItem Click="HostSession" Header="Host Session" IsEnabled="False"/> -->
                             </ContextMenu>
                         </Button.ContextMenu>
                     </Button>

@@ -1,7 +1,11 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cmauri_005Csource_005Crepos_005CSimulWatch_005CSimulWatch_005Clib_005Cmpv_002D1_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cmauri_005Csource_005Crepos_005CSimulWatch_005CSimulWatch_005Clib_005CMulti_0020Client_002Edll/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/AddReferences/RecentPaths/=C_003A_005CUsers_005Cmauri_005Csource_005Crepos_005CSimulWatch_005CSimulWatch_005Clib_005CMulti_0020Server_002Edll/@EntryIndexedValue">True</s:Boolean>
 	<s:String x:Key="/Default/Environment/AssemblyExplorer/XmlDocument/@EntryValue">&lt;AssemblyExplorer&gt;&#xD;
   &lt;Assembly Path="C:\Users\mauri\source\repos\SimulWatch\packages\CefSharp.Common.88.2.40-pre\lib\net452\CefSharp.dll" /&gt;&#xD;
   &lt;PhysicalFolder Path="C:\Users\mauri\.nuget\packages\libvlcsharp\3.5.1" Loaded="True" /&gt;&#xD;
   &lt;PhysicalFolder Path="C:\Users\mauri\.nuget\packages\libvlcsharp.wpf\3.5.1" Loaded="True" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\mauri\source\repos\SimulWatch\SimulWatch\lib\Multi Client.dll" /&gt;&#xD;
+  &lt;Assembly Path="C:\Users\mauri\source\repos\SimulWatch\SimulWatch\lib\Multi Server.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String></wpf:ResourceDictionary>

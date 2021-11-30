@@ -14,7 +14,8 @@
                         
                         <Button Margin="10"
                                 Width="100"
-                                DockPanel.Dock="Left">
+                                DockPanel.Dock="Left"
+                                Click="ServerStartButton">
                                 Start Server
                         </Button>
                         
@@ -41,7 +42,7 @@
                             </Separator>
                             <DockPanel Grid.Column="2">
                                 <Label DockPanel.Dock="Top">Log</Label>
-                                <RichTextBox Margin="10" VerticalScrollBarVisibility="Visible" IsReadOnly="True">
+                                <RichTextBox Margin="10" VerticalScrollBarVisibility="Visible" IsReadOnly="True" Name="LogBox">
                         
                                 </RichTextBox>
                             </DockPanel>

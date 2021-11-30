@@ -2,7 +2,7 @@
 {
     public enum SyncAction
     {
-        Play = 0,
+        Play = 5,
         Pause = 1,
         SkipIntro = 2,
         LoadSource = 3,

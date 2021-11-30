@@ -28,7 +28,7 @@ namespace SimulWatch
         private readonly DoubleAnimation fadeIn = new DoubleAnimation(0, 1, new Duration(TimeSpan.FromSeconds(0.2)));
         private readonly DoubleAnimation fadeOut = new DoubleAnimation(1, 0, new Duration(TimeSpan.FromSeconds(0.2)));
         
-        private bool _isHost;
+        public bool _isHost;
 
         private InternetBrowser Browser => new InternetBrowser();
 
@@ -43,7 +43,7 @@ namespace SimulWatch
         }
         public VlcMediaPlayer MediaPlayer;
         public MpvPlayer Player;
-        public CombinedClient CombinedClient;
+        public Client CombinedClient;
         public MainWindow()
         {
             InitializeComponent();
@@ -88,14 +88,14 @@ namespace SimulWatch
             {
                 if (IsHost)
                 {
-                    CombinedClient.SendPackage(SyncAction.Pause);
+                    //CombinedClient.OutgoingPackages.Add(new PackageData(SyncAction.Pause,null));
                 }
             }
             else
             {
                 if (IsHost)
                 {
-                    CombinedClient.SendPackage(SyncAction.Play);
+                    //CombinedClient.SendPackage(SyncAction.Play);
                 }
             }
 
@@ -148,7 +148,7 @@ namespace SimulWatch
             MediaPlayer.Pause();
             if (IsHost)
             {
-                CombinedClient.SendPackage(SyncAction.SkipIntro);
+                //CombinedClient.SendPackage(SyncAction.SkipIntro);
             }
         }
 
@@ -158,14 +158,14 @@ namespace SimulWatch
             window.Show();
         }
 
-        private void HostSession(object sender, RoutedEventArgs e) //actually joining a session, but didnt rename, also pretty inefficient
-        {
-            Thread hostThread = new Thread(() => CombinedClient = new CombinedClient((string)sender));
-            hostThread.Start();
-            IsHost = true;
-            Title += " {Connected}";
-
-        }
+        // private void HostSession(object sender, RoutedEventArgs e) //actually joining a session, but didnt rename, also pretty inefficient
+        // {
+        //     Thread hostThread = new Thread(() => CombinedClient = new CombinedClient((string)sender));
+        //     hostThread.Start();
+        //     IsHost = true;
+        //     Title += " {Connected}";
+        //
+        // }
 
         private void NewButton_Click(object sender, RoutedEventArgs e)
         {
@@ -182,12 +182,22 @@ namespace SimulWatch
         private void OpenStream(object sender, RoutedEventArgs e)
         {
 
-            Player.Load(StreamURL.Text);
+            //Player.Load(StreamURL.Text);
             //MediaPlayer.Play(StreamURL.Text);
-            
-            if (IsHost)
+
+            if (!IsHost)
             {
-                CombinedClient.SendPackage(StreamURL.Text);
+                string url = "";
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    url = StreamURL.Text;
+                    CombinedClient.OutgoingPackages.Add(new PackageData(SyncAction.LoadSource,url));
+
+                });
+                
+                //CombinedClient.SendPackage(url);
+
+
             }
 
             
@@ -202,7 +212,7 @@ namespace SimulWatch
             }
             if (IsHost)
             {
-                CombinedClient.SendPackage(SyncAction.GoToStart);
+                //CombinedClient.SendPackage(SyncAction.GoToStart);
             }
             
         }

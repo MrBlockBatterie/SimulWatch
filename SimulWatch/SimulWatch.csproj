@@ -38,6 +38,12 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="mscorlib" />
+    <Reference Include="Multi Client, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>lib\Multi Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Multi Server, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>lib\Multi Server.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -74,8 +80,11 @@
     <Compile Include="InternetBrowser.xaml.cs">
       <DependentUpon>InternetBrowser.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Net\Client.cs" />
     <Compile Include="Net\CombinedClient.cs" />
+    <Compile Include="Net\PackageData.cs" />
     <Compile Include="Net\Server.cs" />
+    <Compile Include="Net\ServerOld.cs" />
     <Compile Include="Utility\Discord.cs" />
     <Compile Include="Utility\Extension.cs" />
     <Compile Include="Utility\FFMpeg.cs" />
@@ -101,7 +110,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Net\Client.cs" />
+    <Compile Include="Net\ClientOld.cs" />
     <Compile Include="Net\Host.cs" />
     <Compile Include="Net\SyncAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">

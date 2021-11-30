@@ -13,12 +13,20 @@ namespace SimulWatch
 
         private void ConnectToHost(object sender, RoutedEventArgs e)
         {
-            CombinedClient client;
-            Thread clientThread = new Thread(() => 
-                Dispatcher.Invoke(() =>
+            Client client = new Client();
+            ((MainWindow)App.Current.MainWindow).CombinedClient = client;
+            
+            Thread clientThread = new Thread(() =>
                 {
-                    client = new CombinedClient(TextBox.Text);
-                }));
+                    string cip = "";
+                    Dispatcher.Invoke(() =>
+                    {
+                        cip = TextBox.Text;
+                    });
+                    client.Start(cip);
+                }
+            );
+            
             clientThread.Start();
         }
     }

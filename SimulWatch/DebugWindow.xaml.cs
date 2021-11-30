@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using SimulWatch.Net;
 
 namespace SimulWatch
 {
@@ -14,6 +15,11 @@ namespace SimulWatch
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             Main.FullScreenMode(null,null);
+        }
+
+        private void ServerStartButton(object sender, RoutedEventArgs e)
+        {
+            Server.Start();
         }
     }
 }
